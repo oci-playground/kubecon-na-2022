@@ -9,7 +9,8 @@ reg=localhost:5000
 repo=hello
 name=${reg}/$repo
 tag=latest
-oras_flags="--plain-http"
+# oras_flags="--plain-http"
+oras_flags=""
 
 # push a regular artifact
 echo hello world > hello.txt
