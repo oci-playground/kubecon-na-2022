@@ -28,7 +28,7 @@ oras:
 
 .PHONY: regctl
 regctl: 
-	mkdir -p clones regctl
+	mkdir -p clones bin 
 	[ -d clones/regctl ] || git clone $(REGCTL_GIT_URL) -b $(REGCTL_GIT_BRANCH) clones/regctl
 	cd clones/regctl/ && go build -o ../../bin/regctl ./cmd/regctl/
 
@@ -54,3 +54,9 @@ reset: ## Remove /tmp/registry-root-dir
 .PHONY: e2e
 e2e: ## Run the e2e script
 	scripts/e2e.sh
+
+
+.PHONY: build-oci-image
+build-oci-image: ## Docker build and OCI image
+	mkdir -p outputs
+	docker buildx build  --output=type=oci,dest=./outputs/hello_world.tar -f Dockerfile .
