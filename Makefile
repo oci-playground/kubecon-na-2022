@@ -32,18 +32,22 @@ regctl:
 	[ -d clones/regctl ] || git clone $(REGCTL_GIT_URL) -b $(REGCTL_GIT_BRANCH) clones/regctl
 	cd clones/regctl/ && go build -o ../../bin/regctl ./cmd/regctl/
 
-.PHONY: build
-build: ## Make distribution with OCI support
+.PHONY: build-registry
+build-registry: ## Make distribution with OCI support
 	mkdir -p clones bin config
 	[ -d clones/distribution ] || git clone $(DISTRIBUTION_GIT_URL) -b $(DISTRIBUTION_GIT_BRANCH) clones/distribution
 	cd clones/distribution/ && make && mv bin/registry ../../bin/registry
 	cp clones/distribution/cmd/registry/config-example-with-extensions.yml config/distribution.yml
 
 .PHONY: serve
-serve:  ## Start distribution with OCI support
+serve:  ## Start distribution with OCI support from clone
 	bin/registry serve config/distribution.yml
 
-.PHONY: serve-no-oci
+.PHONY: serve-artifacts 
+serve-artifacts: ## Run distribution with artifact
+	docker run --rm -it -p 127.0.0.1:5000:5000 ghcr.io/oci-playground/registry:latest
+
+.PHONY: serve-no-artifacts
 serve-no-oci: ## Run the registry without OCI support 
 	docker run --rm -it -p 127.0.0.1:5000:5000 docker.io/library/registry:latest 
 
@@ -55,8 +59,14 @@ reset: ## Remove /tmp/registry-root-dir
 e2e: ## Run the e2e script
 	scripts/e2e.sh
 
+.PHONY: push-oci
+push-oci: build-oci-image import-oci-image ## Build and push an oci hello-world image
 
 .PHONY: build-oci-image
-build-oci-image: ## Docker build and OCI image
+build-oci-image: 
 	mkdir -p outputs
 	docker buildx build  --output=type=oci,dest=./outputs/hello_world.tar -f Dockerfile .
+
+.PHONY: import-oci-image
+import-oci-image: regctl
+	./bin/regctl image import localhost:5000/hello-world:latest ./outputs/hello_world.tar
