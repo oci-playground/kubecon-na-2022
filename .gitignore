@@ -1,5 +1,3 @@
-bin/
-clones/
-config/
 outputs/
 hello.txt
+attached.json
