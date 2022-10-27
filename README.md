@@ -1,5 +1,8 @@
 # Kubecon 2022 North America 
 
+The repo contains steps to reproduce the
+demo from [this talk](https://kccncna2022.sched.com/event/182G5/its-complicated-relationships-between-objects-in-oci-registries-josh-dolitsky-chainguard-sajay-antony-microsoft) at KubeCon + CloudNative North America 2022!
+
 ## Setup
 
 Requires Docker.
@@ -65,12 +68,12 @@ regctl artifact push -f ./cat.jpg --artifact-type example/foo --subject localhos
 oras repo tags localhost:5000/hello-world
 
 # Show the index with manifests
-oras manifest fetch localhost:5000/hello-world:sha256-34b7abc75bb574d97e93d23cdd13ed92b39ee6661a221a8fdcfa57cff8e80f4c
+oras manifest fetch localhost:5000/hello-world:sha256-34b7abc75bb574d97e93d23cdd13ed92b39ee6661a221a8fdcfa57cff8e80f4c | jq
 regctl artifact push -f ./hello.txt --subject localhost:5000/hello-world:latest
 
 # Push the second OCI artifact
 regctl artifact push -f ./hello.txt  --artifact-type example/bar --subject localhost:5000/hello-world:latest
 
 ## Show the index with manifests
-oras manifest fetch localhost:5000/hello-world:sha256-34b7abc75bb574d97e93d23cdd13ed92b39ee6661a221a8fdcfa57cff8e80f4c
+oras manifest fetch localhost:5000/hello-world:sha256-34b7abc75bb574d97e93d23cdd13ed92b39ee6661a221a8fdcfa57cff8e80f4c | jq
 ```
