@@ -1,0 +1,9 @@
+{
+    "hosts": {
+      "localhost:5000": {
+        "tls": "disabled",
+        "hostname": "localhost:5000",
+        "credHost": ""
+      }
+    }
+}

@@ -5,6 +5,7 @@
 Requires Docker.
 
 Note: the aliases below will redirect `localhost` inside the container to the container running the registry on port 5000.
+The `alias` commands should be run only after you have a registry up and running.
 
 ### oras
 
@@ -16,10 +17,10 @@ alias oras="docker run --rm -it -v "$(pwd):/workspace" --add-host "localhost:$(d
 
 ### regctl
 
-This is a version of `regctl` published from https://github.com/oci-playground/regctl
+This is a version of `regctl` published from https://github.com/regclient/regclient (commit `d436d53eb7304e32bd6f2757c5624e1bc9009c9b`)
 
 ```
-alias regctl="TODO"
+alias regctl="docker run --rm -it -v "$(pwd):/workspace" --add-host "localhost:$(docker ps | grep '5000->5000' | awk '{print $1}' | xargs docker inspect | jq -r '.[0].NetworkSettings.IPAddress')" -e REGCTL_CONFIG=/workspace/regctl-config.json -w /workspace ghcr.io/regclient/regctl@sha256:2bd688eeb8597fd64881f5d4fd73647a5e3249be0d7c1bf8c04df0ff02b049b2"
 ```
 
 ## Push using the new OCI Artifacts
@@ -28,7 +29,7 @@ alias regctl="TODO"
 # Run the registry with OCI support
 docker run --rm -it -p 127.0.0.1:5000:5000 ghcr.io/oci-playground/registry@sha256:a7a7b3b904337e8b81d06769157a165ba3becb96445b4473df04264b4970c3fa
 
-# Copy an OCI image and see its manifest
+# Copy an OCI image and see its manifest (you can use a different image here if you want)
 oras copy ghcr.io/oci-playground/hello-world@sha256:34b7abc75bb574d97e93d23cdd13ed92b39ee6661a221a8fdcfa57cff8e80f4c localhost:5000/hello-world:latest
 oras manifest fetch localhost:5000/hello-world:latest | jq
 oras manifest fetch localhost:5000/hello-world:latest --descriptor | jq
@@ -52,9 +53,9 @@ curl -s http://localhost:5000/v2/hello-world/referrers/sha256:34b7abc75bb574d97e
 
 ```bash
 # Run the registry without artifact support
-docker run --rm -it -p 127.0.0.1:5000:5000 docker.io/library/registry:latest
+docker run --rm -it -p 127.0.0.1:5000:5000 docker.io/library/registry@sha256:2e830e8b682d73a1b70cac4343a6a541a87d5271617841d87eeb67a824a5b3f2
 
-# Copy an OCI image and see its manifest
+# Copy an OCI image and see its manifest (you can use a different image here if you want)
 oras copy ghcr.io/oci-playground/hello-world@sha256:34b7abc75bb574d97e93d23cdd13ed92b39ee6661a221a8fdcfa57cff8e80f4c localhost:5000/hello-world:latest
 
 # Push an OCI image manifest Artifact
