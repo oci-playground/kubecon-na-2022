@@ -1,4 +1,4 @@
-# Kubecon 2022 North America 
+# KubeCon + CloudNative North America 2022
 
 The repo contains steps to reproduce the
 demo from [this talk](https://kccncna2022.sched.com/event/182G5/its-complicated-relationships-between-objects-in-oci-registries-josh-dolitsky-chainguard-sajay-antony-microsoft) at KubeCon + CloudNative North America 2022!
